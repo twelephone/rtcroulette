@@ -1,0 +1,20 @@
+{
+  "name": "rtcroulette.com",
+  "subdomain": "rtcroulette",
+  "domains": [
+    "rtcroulette.com",
+    "www.rtcroulette.com"
+  ],
+  "scripts": {
+    "start": "app.js"
+  },
+  "version": "0.0.0-8",
+  "engines": {
+    "node": "0.6.x"
+  },
+  "dependencies": {
+    "express": "2.5.11",
+    "jade": ">= 0.0.1",
+    "socket.io": "*"
+  }
+}

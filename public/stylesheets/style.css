@@ -1,0 +1,251 @@
+body {
+  /*padding: 50px;*/
+  font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+
+#videocontainer {
+  position: relative;
+  min-height: 100%;
+  width: 100%;
+  margin: 0px auto;
+  -webkit-perspective: 1000;
+}
+#card {
+/*  -webkit-transition-property: rotation;
+  -webkit-transition-duration: 2s;
+  -webkit-transform-style: preserve-3d;
+*/}
+#local {
+  position: absolute;
+  width: 100%;
+  /*height: 100%;*/
+  -webkit-transform: scale(-1, 1);
+  /*-webkit-backface-visibility: hidden;*/
+}
+#remote {
+  position: absolute;
+  width: 100%;
+  /*height: 100%;*/
+  /*-webkit-transform: rotateY(180deg);*/
+  /*-webkit-backface-visibility: hidden;*/
+}
+#mini {
+  position: absolute;
+
+/*  height: 30%;
+  width: 30%;
+  bottom: 43%;
+*/
+
+  height: 250px;
+  width: 250px;
+  top: 30px;
+
+  right: 100px;
+  -webkit-transform: scale(-1, 1);
+  opacity: 1.0;
+}
+#localVideo {
+  opacity: 1;
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 2s;
+}
+#remoteVideo {
+  opacity: 1;
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 2s;
+}
+#miniVideo {
+  opacity: 1;
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 2s;
+}
+#videofooter {
+  spacing: 4px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 28px;
+  background-color: #3F3F3F;
+  color: rgb(255, 255, 255);
+  font-size:13px; font-weight: bold;
+  line-height: 28px;
+  text-align: center;
+}
+#videologo {
+  display: block;
+  top:30;
+  left:4;
+  position:absolute;
+  float:right;
+  opacity: 0.5;
+}
+
+.live {
+  position: absolute;
+  color: white;
+  z-index: 1;
+  font-weight: 600;
+  font-family: Arial;
+  font-size: 12pt;
+  left: 15px;
+  top: 100px;
+  text-shadow: 1px 1px red;
+  letter-spacing: 1px;
+}
+
+video {
+  object-fit: fill;
+  -webkit-transform: scaleX(2); 
+  -moz-transform: scaleX(2);  
+}
+
+.login-page, .static-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #0054A6;
+  height: 100%;
+}
+
+.login-header {
+  font-size: 92px;
+  color: white;
+  opacity: 0.5;
+  padding: 20px;
+  /*margin-top: 5%;*/
+}
+
+.login-header .icon-twitter {
+  position: relative;
+  font-size: 82px;
+  top: -7px;
+}
+
+.login-header b { 
+  position: relative;
+  top: -20px;
+  font-size: 42px;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+.login-header .equal {
+  left: -20px;
+}
+
+.login-logo .icon-twelephone {
+  margin-top: 30px;
+  font-size: 16em;
+  color: white;
+}
+
+.login-button {
+  padding: 18px;
+  color: white;
+  border: 0;
+  font-size: 18px;
+  margin-left: -50px;
+  margin-top: 5%;
+  margin-bottom: 80px;
+  background-color: #0082FF; /*#0080ff;*/
+}
+
+.learnmore-button {
+  padding: 18px;
+  color: white;
+  border: 0;
+  font-size: 18px;
+  margin-left: 5px;
+  margin-top: 5%;
+  margin-bottom: 80px;
+  background-color: #061427; /*#0080ff;*/
+}
+
+.login-footer {
+  position: fixed;
+  background-color: #eee;
+  bottom: 0;
+  font-size: 16px;
+  width: 100%;
+  min-height: 60px;
+}
+
+.login-footer ul {
+  padding-right: 40px;
+  list-style: none;
+  margin-top: 20px;
+  vertical-align: middle;
+}
+
+.login-footer ul li {
+  display: inline;
+  padding: 0 0 0 20px;
+}
+
+.login-footer ul li a {
+  color: #999;
+}
+
+.login-footer .twitter {
+  margin-top: 20px;
+  padding-left: 20px
+}
+
+/* about page */
+
+.static-logo .icon-twelephone {
+  font-size: 16em;
+}
+
+.welcome {
+  margin: 40px;
+  background-color: white;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
+  filter: alpha(opacity=90);
+  opacity: .9;
+}
+.welcome i {
+  font-size: 90px;
+}
+.presence {
+  margin-left: 8px;
+}
+
+.icon-twelephone {
+  vertical-align: middle;  
+  font-size: 16px;
+}
+
+.ico-blue {
+  color: #40A1FF;
+}
+
+.ico-green {
+  color: #5fe029;
+}
+
+.ico-yellow {
+  color: #f2b211;
+}
+
+.ico-grey {
+  color: #999;
+}
+
+.marketing {
+  font-size: 18px;
+  padding: 0px 50px 20px;
+}
+#result {
+  color: white;
+}
+.elevator-pitch {
+  color: white;
+  vertical-align: middle;  
+  font-size: 22px;  
+}

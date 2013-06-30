@@ -1,0 +1,117 @@
+center
+  .login-header
+    h1= title
+
+  h1.elevator-pitch 
+    br
+    br
+    | Welcome to WebRTC Chat Roulette! 
+    br
+    | Click on the Roulette button below or wait for a call.
+
+  div#result 
+  div#videocontainers.video-container
+    div#remote
+      video#remoteVideo(width="100%", height="500px", autoplay="autoplay")
+    div#mini
+      video#miniVideo(width="250px", height="250px", autoplay="autoplay", muted="true")
+    //- img#videologo(alt="Twelephone", src="images/logo.png")
+    //- div.live LIVE
+    //- div#videofooter
+
+  .login-footer
+
+    button.login-button
+      i.fui-video Roulette    
+
+script.
+  $(document).ready(function(){
+
+    var myPhonoId, mySocketId;
+
+    var jiggle = function() {
+      $(".login-button").addClass("animated tada");
+    };
+    setTimeout(jiggle, 2000);    
+
+    var socket = io.connect();
+
+    var phono = $.phono({
+      apiKey: "f12dc371538c973b3cb200b43b6c594d",
+      connectionUrl: "http://i-8f17cae0.phono.com:8080/http-bind",
+      onReady: function() {
+        // $("#call").attr("disabled", false).val("Call");
+        console.log("phono ready = " + phono.sessionId);
+        console.log("socket = " + socket.socket.sessionid);
+        myPhonoId = phono.sessionId;
+        mySocketId = socket.socket.sessionid;
+        socket.emit("hello", phono.sessionId);   
+      },
+      audio: {
+        type: "jsep",
+        media: {
+          audio: true,
+          video: true
+        },
+        remoteContainerId: "remoteVideo",
+        localContainerId: "miniVideo"
+      },
+
+      phone: {
+        onIncomingCall: function(event) {
+          $(".elevator-pitch").show();
+          $(".elevator-pitch").html('Incoming call! Click the ALLOW button in the top/right of the page.');
+          var call = event.call;
+          //- alert("Incoming call");
+          call.answer();
+          //- $(".elevator-pitch").hide()
+          call.bind({
+            onHangup: function(event) {
+                 console.log("Call hung up");
+            }
+          });
+        }
+      }          
+    });
+
+    $(".login-button").click(function(event) {
+
+      $(".elevator-pitch").hide()
+      /* stop form from submitting normally */
+      event.preventDefault();
+
+      /*clear result div*/
+      $("#result").html('');
+
+      /* get some values from elements on the page: */
+      var values = $(this).serialize();
+      //- console.log('>>>>>>>call clicked');
+      /* Send the data using post and put the results in a div */
+      $.ajax({
+        url: "/getNext/" + socket.socket.sessionid,
+        type: "get",
+        success: function(data){
+          console.log(data.jid);
+          $("#result").html('calling: ' + data.jid);
+          phono.phone.dial("xmpp:" + data.jid, {
+            onRing: function() {
+              $("#result").html("Ringing");
+            },
+            onAnswer: function() {
+              $("#result").html("Answered");
+            },
+            onHangup: function() {
+              //- $("#call").attr("disabled", false).val("Call");
+              $("#result").html("Hangup");
+            }
+          });
+
+        },
+        error:function(){
+          $("#result").html('there is error while submit');
+        }   
+      }); 
+
+    });
+
+  })
