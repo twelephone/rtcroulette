@@ -27,7 +27,7 @@ center
 script.
   $(document).ready(function(){
 
-    var myPhonoId, mySocketId;
+    var myPhonoId, mySocketId, call;
 
     var jiggle = function() {
       $(".login-button").addClass("animated tada");
@@ -45,7 +45,7 @@ script.
         console.log("socket = " + socket.socket.sessionid);
         myPhonoId = phono.sessionId;
         mySocketId = socket.socket.sessionid;
-        socket.emit("hello", phono.sessionId);   
+        socket.emit("hello", phono.sessionId);          
       },
       audio: {
         type: "jsep",
@@ -61,13 +61,14 @@ script.
         onIncomingCall: function(event) {
           $(".elevator-pitch").show();
           $(".elevator-pitch").html('Incoming call! Click the ALLOW button in the top/right of the page.');
-          var call = event.call;
+          call = event.call;
           //- alert("Incoming call");
           call.answer();
           //- $(".elevator-pitch").hide()
           call.bind({
             onHangup: function(event) {
-                 console.log("Call hung up");
+                 $("#result").html("Hangup");
+                 socket.emit("hello", myPhonoId); 
             }
           });
         }
@@ -86,6 +87,11 @@ script.
       /* get some values from elements on the page: */
       var values = $(this).serialize();
       //- console.log('>>>>>>>call clicked');
+
+      try {
+        call.hangup()
+      } catch (e){}
+
       /* Send the data using post and put the results in a div */
       $.ajax({
         url: "/getNext/" + socket.socket.sessionid,
@@ -93,7 +99,7 @@ script.
         success: function(data){
           console.log(data.jid);
           $("#result").html('calling: ' + data.jid);
-          phono.phone.dial("xmpp:" + data.jid, {
+          call = phono.phone.dial("xmpp:" + data.jid, {
             onRing: function() {
               $("#result").html("Ringing");
             },
@@ -103,6 +109,7 @@ script.
             onHangup: function() {
               //- $("#call").attr("disabled", false).val("Call");
               $("#result").html("Hangup");
+              socket.emit("hello", myPhonoId); 
             }
           });
 
