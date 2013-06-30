@@ -113,7 +113,7 @@ script.
         success: function(data){
           console.log(data.jid);
           if (data.jid) {
-            $("#result").html('calling: ' + data.jid);
+            $("#result").html('Calling someone!');
             call = phono.phone.dial("xmpp:" + data.jid, {
               onRing: function() {
                 $("#result").html("Ringing");
