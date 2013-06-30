@@ -151,19 +151,8 @@ video {
   font-size: 18px;
   margin-left: -50px;
   margin-top: 5%;
-  margin-bottom: 80px;
+  margin-bottom: 20px;
   background-color: #0082FF; /*#0080ff;*/
-}
-
-.learnmore-button {
-  padding: 18px;
-  color: white;
-  border: 0;
-  font-size: 18px;
-  margin-left: 5px;
-  margin-top: 5%;
-  margin-bottom: 80px;
-  background-color: #061427; /*#0080ff;*/
 }
 
 .login-footer {

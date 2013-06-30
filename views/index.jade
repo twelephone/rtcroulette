@@ -20,9 +20,15 @@ center
     //- div#videofooter
 
   .login-footer
-
-    button.login-button
-      i.fui-video Roulette    
+    ul.pull-left 
+      li &copy 2013 - 
+        a(href="http://twitter.com/twelephone") @Twelephone
+        i - WebRTC powered by 
+          a(href="http://phono.com") Phono
+    ul.pull-right
+      li
+        button.login-button
+          i.fui-video Roulette    
 
 script.
   $(document).ready(function(){
@@ -66,8 +72,16 @@ script.
           call.answer();
           //- $(".elevator-pitch").hide()
           call.bind({
+            onRing: function() {
+              //- $("#result").html("Ringing");
+            },
+            onAnswer: function() {
+              $("#result").html("");
+              $(".elevator-pitch").hide();
+            },            
             onHangup: function(event) {
-                 $("#result").html("Hangup");
+                 $("#result").html("Disconnected");
+                 console.log(myPhonoId);
                  socket.emit("hello", myPhonoId); 
             }
           });
@@ -98,24 +112,30 @@ script.
         type: "get",
         success: function(data){
           console.log(data.jid);
-          $("#result").html('calling: ' + data.jid);
-          call = phono.phone.dial("xmpp:" + data.jid, {
-            onRing: function() {
-              $("#result").html("Ringing");
-            },
-            onAnswer: function() {
-              $("#result").html("Answered");
-            },
-            onHangup: function() {
-              //- $("#call").attr("disabled", false).val("Call");
-              $("#result").html("Hangup");
-              socket.emit("hello", myPhonoId); 
-            }
-          });
+          if (data.jid) {
+            $("#result").html('calling: ' + data.jid);
+            call = phono.phone.dial("xmpp:" + data.jid, {
+              onRing: function() {
+                $("#result").html("Ringing");
+              },
+              onAnswer: function() {
+                $("#result").html("");
+              },
+              onHangup: function() {
+                //- $("#call").attr("disabled", false).val("Call");
+                $("#result").html("Disconnected");
+                console.log(myPhonoId);
+                socket.emit("hello", myPhonoId); 
+              }
+            });
+
+          } else {
+            $("#result").html("Wait for someone else to join.");
+          }
 
         },
         error:function(){
-          $("#result").html('there is error while submit');
+          $("#result").html('There is error connecting...');
         }   
       }); 
 
