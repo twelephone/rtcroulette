@@ -46,6 +46,11 @@ app.get('/getNext/:socket', function(req, res){
 
 });
 
+app.get('/available', function(req, res){
+  res.send({available: users.length});
+});
+
+
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
