@@ -33,7 +33,6 @@ app.get('/getNext/:socket', function(req, res){
     var userFilter = users.filter(function (user) { return user.socket == req.params.socket });
     users.splice(users.indexOf(userFilter[0]), 1); 
 
-
     // Get first available key/jid to call
     // delete user from KV (no longer available)
     var nextUser = users.shift();
@@ -71,16 +70,16 @@ io.configure(function() {
 io.sockets.on("connection", function(socket) {
   socket.on("hello", function(jid) {
     users.push({socket: socket.id.toString(), jid: jid});
-    console.log("connected: " + socket.id.toString() + " jid=" + jid);
-    console.log(users);
+    // console.log("connected: " + socket.id.toString() + " jid=" + jid);
+    // console.log(users);
   });
   socket.on("disconnect", function() {
     var userFilter = users.filter(function (user) { return user.socket == socket.id.toString() });
     if (userFilter && userFilter.length){
       users.splice(users.indexOf(userFilter[0]), 1);      
     }
-    console.log("disconnected: " + socket.id.toString());
-    console.log(users);
+    // console.log("disconnected: " + socket.id.toString());
+    // console.log(users);
   });
 });
 

@@ -15,9 +15,6 @@ center
       video#remoteVideo(width="100%", height="500px", autoplay="autoplay")
     div#mini
       video#miniVideo(width="250px", height="250px", autoplay="autoplay", muted="true")
-    //- img#videologo(alt="Twelephone", src="images/logo.png")
-    //- div.live LIVE
-    //- div#videofooter
 
   .login-footer
     ul.pull-left 
@@ -46,7 +43,6 @@ script.
       apiKey: "f12dc371538c973b3cb200b43b6c594d",
       connectionUrl: "http://i-8f17cae0.phono.com:8080/http-bind",
       onReady: function() {
-        // $("#call").attr("disabled", false).val("Call");
         console.log("phono ready = " + phono.sessionId);
         console.log("socket = " + socket.socket.sessionid);
         myPhonoId = phono.sessionId;
@@ -68,9 +64,7 @@ script.
           $(".elevator-pitch").show();
           $(".elevator-pitch").html('Incoming call! Click the ALLOW button in the top/right of the page.');
           call = event.call;
-          //- alert("Incoming call");
           call.answer();
-          //- $(".elevator-pitch").hide()
           call.bind({
             onRing: function() {
               //- $("#result").html("Ringing");
@@ -81,7 +75,6 @@ script.
             },            
             onHangup: function(event) {
                  $("#result").html("Disconnected");
-                 console.log(myPhonoId);
                  socket.emit("hello", myPhonoId); 
             }
           });
@@ -91,27 +84,20 @@ script.
 
     $(".login-button").click(function(event) {
 
+      $("#result").html('');
       $(".elevator-pitch").hide()
       /* stop form from submitting normally */
       event.preventDefault();
-
-      /*clear result div*/
-      $("#result").html('');
-
-      /* get some values from elements on the page: */
-      var values = $(this).serialize();
-      //- console.log('>>>>>>>call clicked');
 
       try {
         call.hangup()
       } catch (e){}
 
-      /* Send the data using post and put the results in a div */
+      /* Call next available participant */
       $.ajax({
         url: "/getNext/" + socket.socket.sessionid,
         type: "get",
         success: function(data){
-          console.log(data.jid);
           if (data.jid) {
             $("#result").html('Calling someone!');
             call = phono.phone.dial("xmpp:" + data.jid, {
@@ -130,7 +116,7 @@ script.
             });
 
           } else {
-            $("#result").html("Wait for someone else to join.");
+            $("#result").html("Waitig for someone else to join.");
           }
 
         },
