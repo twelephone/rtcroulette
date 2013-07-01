@@ -12,9 +12,9 @@ center
   div#result 
   div#videocontainers.video-container
     div#remote
-      video#remoteVideo(width="100%", height="500px", autoplay="autoplay")
+      video#remoteVideo(width="100%", autoplay="autoplay")
     div#mini
-      video#miniVideo(width="250px", height="250px", autoplay="autoplay", muted="true")
+      video#miniVideo(width="250px", autoplay="autoplay", muted="true")
 
   .login-footer
     ul.pull-left 
@@ -38,6 +38,11 @@ script.
     setTimeout(jiggle, 2000);    
 
     var socket = io.connect();
+    socket.on("queue", function(users) {
+      console.log(users);
+      $('#result').html(users.toString() + ' users in queue');
+    });
+
 
     var phono = $.phono({
       apiKey: "f12dc371538c973b3cb200b43b6c594d",
@@ -74,8 +79,8 @@ script.
               $(".elevator-pitch").hide();
             },            
             onHangup: function(event) {
-                 $("#result").html("Disconnected");
-                 socket.emit("hello", myPhonoId); 
+              $("#result").html("Disconnected");
+              socket.emit("hello", myPhonoId); 
             }
           });
         }
@@ -128,12 +133,4 @@ script.
     });
 
   })
-
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-2483685-28', 'rtcroulette.com');
-  ga('send', 'pageview');
 

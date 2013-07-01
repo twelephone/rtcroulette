@@ -37,7 +37,8 @@ app.get('/getNext/:socket', function(req, res){
     // delete user from KV (no longer available)
     var nextUser = users.shift();
 
-    console.log(nextUser);
+    // console.log(nextUser);
+
     res.send({jid: nextUser.jid});
 
   } else {
@@ -75,13 +76,13 @@ io.configure(function() {
 io.sockets.on("connection", function(socket) {
   socket.on("hello", function(jid) {
     users.push({socket: socket.id.toString(), jid: jid});
-    // console.log("connected: " + socket.id.toString() + " jid=" + jid);
-    // console.log(users);
+    io.sockets.emit("queue", users.length);
   });
   socket.on("disconnect", function() {
     var userFilter = users.filter(function (user) { return user.socket == socket.id.toString() });
     if (userFilter && userFilter.length){
       users.splice(users.indexOf(userFilter[0]), 1);      
+      io.sockets.emit("queue", users.length);
     }
     // console.log("disconnected: " + socket.id.toString());
     // console.log(users);
