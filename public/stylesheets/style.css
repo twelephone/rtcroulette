@@ -1,7 +1,13 @@
 body {
   /*padding: 50px;*/
   font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+  min-height:100%;
+  width: 100%;
 }
+
+html { height: 100%; }
+body {height: 100%; }
+#content {min-height: 100%; }
 
 a {
   color: #00B7FF;
@@ -28,8 +34,16 @@ a {
   /*-webkit-backface-visibility: hidden;*/
 }
 #remote {
-  position: absolute;
+/*  position: absolute;
   width: 100%;
+*/
+position: absolute;
+z-index: 1;
+top: 0;
+left: 0;
+width: 100%;
+opacity: .8;
+
   /*height: 100%;*/
   /*-webkit-transform: rotateY(180deg);*/
   /*-webkit-backface-visibility: hidden;*/
@@ -59,6 +73,7 @@ a {
   opacity: 1;
   -webkit-transition-property: opacity;
   -webkit-transition-duration: 2s;
+  min-height:100%;
 }
 #miniVideo {
   opacity: 1;
@@ -153,6 +168,7 @@ video {
   margin-top: 5%;
   margin-bottom: 20px;
   background-color: #0082FF; /*#0080ff;*/
+
 }
 
 .login-footer {
@@ -162,6 +178,7 @@ video {
   font-size: 16px;
   width: 100%;
   min-height: 60px;
+  z-index: 9999;
 }
 
 .login-footer ul {
