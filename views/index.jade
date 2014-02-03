@@ -1,139 +1,142 @@
-center
-  .login-header
-    h1= title
+extends layout
 
-  h1.elevator-pitch 
-    br
-    br
-    | Welcome to WebRTC Chat Roulette! 
-    br
-    | Click on the Roulette button below or wait for a call.
+block mainContent
+  center
+    .login-header
+      h1= title
 
-  div#result 
-  //- div#videocontainers.video-container
-  div#remote
-    video#remoteVideo(autoplay="autoplay")
-  div#mini(style="display:none;")
-    video#miniVideo(width="250px", autoplay="autoplay", muted="true")
+    h1.elevator-pitch 
+      br
+      br
+      | Welcome to WebRTC Chat Roulette! 
+      br
+      | Click on the Roulette button below or wait for a call.
 
-  .login-footer
-    ul.pull-left 
-      li &copy 2013 - 
-        a(href="http://twitter.com/twelephone") @Twelephone
-        i - WebRTC powered by 
-          a(href="http://phono.com") Phono
-        i - opensource on 
-          a(href="https://github.com/twelephone/rtcroulette") GitHub 
+    div#result 
+    //- div#videocontainers.video-container
+    div#remote
+      video#remoteVideo(autoplay="autoplay")
+    div#mini(style="display:none;")
+      video#miniVideo(width="250px", autoplay="autoplay", muted="true")
 
-    ul.pull-right
-      li
-        button.login-button
-          i.fui-video Roulette    
+    .login-footer
+      ul.pull-left 
+        li &copy 2013 - 
+          a(href="http://twitter.com/twelephone") @Twelephone
+          i - WebRTC powered by 
+            a(href="http://phono.com") Phono
+          i - opensource on 
+            a(href="https://github.com/twelephone/rtcroulette") GitHub 
 
-script.
-  $(document).ready(function(){
+      ul.pull-right
+        li
+          button.login-button
+            i.fui-video Roulette    
 
-    var myPhonoId, mySocketId, call;
+  script.
+    $(document).ready(function(){
 
-    var jiggle = function() {
-      $(".login-button").addClass("animated tada");
-    };
-    setTimeout(jiggle, 2000);    
+      var myPhonoId, mySocketId, call;
 
-    var socket = io.connect();
-    socket.on("queue", function(users) {
-      console.log(users);
-      $('#result').html(users.toString() + ' users in queue');
-    });
+      var jiggle = function() {
+        $(".login-button").addClass("animated tada");
+      };
+      setTimeout(jiggle, 2000);    
+
+      var socket = io.connect();
+      socket.on("queue", function(users) {
+        console.log(users);
+        $('#result').html(users.toString() + ' users in queue');
+      });
 
 
-    var phono = $.phono({
-      apiKey: "f12dc371538c973b3cb200b43b6c594d",
-      connectionUrl: "http://pgw-v11f.phono.com:8080/http-bind",
-      onReady: function() {
-        console.log("phono ready = " + phono.sessionId);
-        console.log("socket = " + socket.socket.sessionid);
-        myPhonoId = phono.sessionId;
-        mySocketId = socket.socket.sessionid;
-        socket.emit("hello", phono.sessionId);          
-      },
-      audio: {
-        type: "jsep",
-        media: {
-          audio: true,
-          video: true
+      var phono = $.phono({
+        apiKey: "f12dc371538c973b3cb200b43b6c594d",
+        connectionUrl: "http://pgw-v11f.phono.com:8080/http-bind",
+        onReady: function() {
+          console.log("phono ready = " + phono.sessionId);
+          console.log("socket = " + socket.socket.sessionid);
+          myPhonoId = phono.sessionId;
+          mySocketId = socket.socket.sessionid;
+          socket.emit("hello", phono.sessionId);          
         },
-        remoteContainerId: "remoteVideo",
-        localContainerId: "miniVideo"
-      },
+        audio: {
+          type: "jsep",
+          media: {
+            audio: true,
+            video: true
+          },
+          remoteContainerId: "remoteVideo",
+          localContainerId: "miniVideo"
+        },
 
-      phone: {
-        onIncomingCall: function(event) {
-          $(".elevator-pitch").show();
-          $(".elevator-pitch").html('Incoming call! Click the ALLOW button in the top/right of the page.');
-          call = event.call;
-          call.answer();
-          call.bind({
-            onRing: function() {
-              //- $("#result").html("Ringing");
-            },
-            onAnswer: function() {
-              $("#result").html("");
-              $(".elevator-pitch").hide();
-            },            
-            onHangup: function(event) {
-              $("#result").html("Disconnected");
-              socket.emit("hello", myPhonoId); 
-            }
-          });
-        }
-      }          
-    });
-
-    $(".login-button").click(function(event) {
-
-      $("#result").html('');
-      $(".elevator-pitch").hide()
-      /* stop form from submitting normally */
-      event.preventDefault();
-
-      try {
-        call.hangup()
-      } catch (e){}
-
-      /* Call next available participant */
-      $.ajax({
-        url: "/getNext/" + socket.socket.sessionid,
-        type: "get",
-        success: function(data){
-          if (data.jid) {
-            $("#result").html('Calling someone!');
-            call = phono.phone.dial("xmpp:" + data.jid, {
+        phone: {
+          onIncomingCall: function(event) {
+            $(".elevator-pitch").show();
+            $(".elevator-pitch").html('Incoming call! Click the ALLOW button in the top/right of the page.');
+            call = event.call;
+            call.answer();
+            call.bind({
               onRing: function() {
-                $("#result").html("Ringing");
+                //- $("#result").html("Ringing");
               },
               onAnswer: function() {
                 $("#result").html("");
-              },
-              onHangup: function() {
-                //- $("#call").attr("disabled", false).val("Call");
+                $(".elevator-pitch").hide();
+              },            
+              onHangup: function(event) {
                 $("#result").html("Disconnected");
-                console.log(myPhonoId);
                 socket.emit("hello", myPhonoId); 
               }
             });
-
-          } else {
-            $("#result").html("Waiting for someone else to join.");
           }
+        }          
+      });
 
-        },
-        error:function(){
-          $("#result").html('There is error connecting...');
-        }   
-      }); 
+      $(".login-button").click(function(event) {
 
-    });
+        $("#result").html('');
+        $(".elevator-pitch").hide()
+        /* stop form from submitting normally */
+        event.preventDefault();
 
-  })
+        try {
+          call.hangup()
+        } catch (e){}
+
+        /* Call next available participant */
+        $.ajax({
+          url: "/getNext/" + socket.socket.sessionid,
+          type: "get",
+          success: function(data){
+            if (data.jid) {
+              $("#result").html('Calling someone!');
+              call = phono.phone.dial("xmpp:" + data.jid, {
+                onRing: function() {
+                  $("#result").html("Ringing");
+                },
+                onAnswer: function() {
+                  $("#result").html("");
+                },
+                onHangup: function() {
+                  //- $("#call").attr("disabled", false).val("Call");
+                  $("#result").html("Disconnected");
+                  console.log(myPhonoId);
+                  socket.emit("hello", myPhonoId); 
+                }
+              });
+
+            } else {
+              $("#result").html("Waiting for someone else to join.");
+            }
+
+          },
+          error:function(){
+            $("#result").html('There is error connecting...');
+          }   
+        }); 
+
+      });
+
+    })
 

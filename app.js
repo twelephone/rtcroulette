@@ -1,26 +1,45 @@
 var express = require('express')
-  , routes = require('./routes');
-
-var users = [];
-
-var app = module.exports = express.createServer();
-
+  , routes = require('./routes')
+  , http = require('http');
+ 
+var app = express();
+var server = app.listen(process.env.PORT || 3000);
+var io = require('socket.io').listen(server);
+ 
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  app.use(express.static(__dirname + '/public'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
 });
-
+ 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function(){
   app.use(express.errorHandler());
 });
+
+
+var users = [];
+
+// app.configure(function(){
+//   app.set('views', __dirname + '/views');
+//   app.set('view engine', 'jade');
+//   app.use(express.bodyParser());
+//   app.use(express.methodOverride());
+//   app.use(app.router);
+//   app.use(express.static(__dirname + '/public'));
+// });
+
+// app.configure('development', function(){
+//   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+// });
+
+// app.configure('production', function(){
+//   app.use(express.errorHandler());
+// });
 
 app.get('/', routes.index);
 
@@ -52,12 +71,16 @@ app.get('/available', function(req, res){
 });
 
 
-app.listen(process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-});
+// app.listen(process.env.PORT || 3000, function(){
+// app.listen(process.env.PORT || 3000, function(){
+//   console.log("Express server listening on port %d in %s mode", process.env.PORT, app.settings.env);
+// });
+
+// server.listen(process.env.PORT || 3000);
 
 
-var io = require('socket.io').listen(app);
+
+var io = require('socket.io').listen(server);
 
 io.configure(function() {
   io.enable("browser client minification");
